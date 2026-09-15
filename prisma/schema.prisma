@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -38,7 +37,7 @@ model Evaluation {
   attemptId          String   @unique
 
   architectureScore  Int
-  solidScore          Int
+  solidScore         Int
   extensibilityScore Int
   requirementsScore  Int
   codeQualityScore   Int

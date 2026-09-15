@@ -1,6 +1,6 @@
 import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -8,56 +8,76 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter });
 
-const problems = [
-  {
-    id: "parking-lot",
-    title: "Parking Lot",
-    slug: "parking-lot",
-    difficulty: "Easy",
-    description:
-      "Design a parking lot system that can manage vehicles, parking spots, entry, exit, and availability.",
-    requirements:
-      "Support different vehicle types and parking spot types. Assign suitable spots, track occupied/free spots, handle vehicle entry and exit, and calculate parking duration.",
-  },
-  {
-    id: "elevator",
-    title: "Elevator System",
-    slug: "elevator",
-    difficulty: "Medium",
-    description:
-      "Design an elevator system that manages multiple elevators, floor requests, movement, and scheduling.",
-    requirements:
-      "Support multiple elevators, internal and external requests, elevator movement, request assignment, and handling concurrent requests efficiently.",
-  },
-  {
-    id: "vending-machine",
-    title: "Vending Machine",
-    slug: "vending-machine",
-    difficulty: "Easy",
-    description:
-      "Design a vending machine that manages products, inventory, payments, and item dispensing.",
-    requirements:
-      "Support product selection, inventory management, accepting money, validating payments, dispensing products, returning change, and handling insufficient balance or out-of-stock products.",
-  },
-];
-
 async function main() {
-  for (const problem of problems) {
-    await prisma.problem.upsert({
-      where: { id: problem.id },
-      update: problem,
-      create: problem,
-    });
-  }
+  await prisma.problem.upsert({
+    where: { slug: "parking-lot" },
+    update: {},
+    create: {
+      id: "parking-lot",
+      title: "Parking Lot",
+      slug: "parking-lot",
+      difficulty: "Easy",
+      description:
+        "Design a parking lot system that supports multiple vehicle types and parking spot types.",
+      requirements: JSON.stringify([
+        "Support cars, bikes, and trucks",
+        "Support different parking spot types",
+        "Assign an appropriate spot when a vehicle enters",
+        "Release the spot when a vehicle exits",
+        "Calculate parking fees",
+      ]),
+    },
+  });
 
-  console.log("Seed completed successfully.");
+  await prisma.problem.upsert({
+    where: { slug: "elevator" },
+    update: {},
+    create: {
+      id: "elevator",
+      title: "Elevator System",
+      slug: "elevator",
+      difficulty: "Medium",
+      description:
+        "Design an elevator system that manages multiple elevators and requests efficiently.",
+      requirements: JSON.stringify([
+        "Support multiple elevators",
+        "Accept floor requests",
+        "Assign elevators to requests",
+        "Track elevator state and direction",
+        "Handle concurrent requests",
+      ]),
+    },
+  });
+
+  await prisma.problem.upsert({
+    where: { slug: "vending-machine" },
+    update: {},
+    create: {
+      id: "vending-machine",
+      title: "Vending Machine",
+      slug: "vending-machine",
+      difficulty: "Easy",
+      description:
+        "Design a vending machine that manages products, inventory, payments, and dispensing.",
+      requirements: JSON.stringify([
+        "Support multiple products",
+        "Track inventory",
+        "Accept payments",
+        "Dispense selected products",
+        "Return change",
+        "Handle invalid or insufficient payments",
+      ]),
+    },
+  });
 }
 
 main()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+    console.log("Seed completed successfully.");
+  })
+  .catch(async (error) => {
+    console.error(error);
+    await prisma.$disconnect();
+    process.exit(1);
   });
