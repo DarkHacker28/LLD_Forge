@@ -1,9 +1,9 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL!,
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
 
 const prisma = new PrismaClient({ adapter });
@@ -13,11 +13,11 @@ const problems = [
     id: "parking-lot",
     title: "Parking Lot",
     slug: "parking-lot",
-    difficulty: "Medium",
+    difficulty: "Easy",
     description:
-      "Design a parking lot system that supports multiple vehicle types, parking spots, and ticket generation.",
+      "Design a parking lot system that can manage vehicles, parking spots, entry, exit, and availability.",
     requirements:
-      "Support cars, bikes and trucks. Handle parking spot allocation. Generate tickets. Allow vehicle exit and fee calculation.",
+      "Support different vehicle types and parking spot types. Assign suitable spots, track occupied/free spots, handle vehicle entry and exit, and calculate parking duration.",
   },
   {
     id: "elevator",
@@ -25,9 +25,9 @@ const problems = [
     slug: "elevator",
     difficulty: "Medium",
     description:
-      "Design an elevator system that manages multiple elevators and handles floor requests efficiently.",
+      "Design an elevator system that manages multiple elevators, floor requests, movement, and scheduling.",
     requirements:
-      "Support multiple elevators. Handle internal and external requests. Track elevator state and direction. Assign suitable elevators.",
+      "Support multiple elevators, internal and external requests, elevator movement, request assignment, and handling concurrent requests efficiently.",
   },
   {
     id: "vending-machine",
@@ -35,9 +35,9 @@ const problems = [
     slug: "vending-machine",
     difficulty: "Easy",
     description:
-      "Design a vending machine that manages products, inventory, payments and item dispensing.",
+      "Design a vending machine that manages products, inventory, payments, and item dispensing.",
     requirements:
-      "Support product selection. Manage inventory. Accept payments. Calculate change. Handle insufficient payment and out-of-stock cases.",
+      "Support product selection, inventory management, accepting money, validating payments, dispensing products, returning change, and handling insufficient balance or out-of-stock products.",
   },
 ];
 
@@ -50,7 +50,7 @@ async function main() {
     });
   }
 
-  console.log("Problems seeded successfully.");
+  console.log("Seed completed successfully.");
 }
 
 main()
