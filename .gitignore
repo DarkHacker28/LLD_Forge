@@ -11,3 +11,4 @@ dev.db-journal
 .agents/
 .claude/
 .windsurf/
+src/generated/
